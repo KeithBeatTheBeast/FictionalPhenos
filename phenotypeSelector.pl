@@ -15,3 +15,8 @@ a1(N) :- eyes(brown, brown, N). % N = brown
 a2(N) :- eyes(blue, brown, N). % N = brown, not working right now.
 a3(N) :- eyes(brown, blue, N). % N = brown, does work.
 a3 :- eyes(brown, brown, blue). % False
+
+% TODO:
+% A predicate, printPheno(+Name), that takes the name of an individual in the DB and reports their phenotypes
+% A function, potentialPhenos(+Father, +Mother, -Eyes, -Hair), that takes the name of two individuals in the DB and lists all valid phenotype combinations.
+% A function, possiblePhenos(+Father, +Mother, +Child) that takes three individuals in: father, mother and chiid, and reports if the child is possible
