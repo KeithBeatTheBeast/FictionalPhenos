@@ -22,16 +22,10 @@ a3 :- eyes(brown, brown, blue). % False
 
 % printPheno(+Name).
 % Takes in the name of the individual as an argument, and reports 
-printPheno(Name) :- getDominantEyes(Name, Eyes), getDominantHair(Name, Hair), statePheno(Name, Eyes, Hair).
+printPheno(Name) :- genes(Genotype), format('~w:', [Name]), printPheno(Name, Genotype), !.
+printPheno(_, []).
+printPheno(Name, [Gcar|Gcdr]) :- dominantGene(Gcar, Name, Pheno), !, format('~n~w of ~w', [Pheno, Gcar]), printPheno(Name, Gcdr).
+printPheno(Name, [Gcar|Gcdr]) :- format('~nmissing ~w information', [Gcar]), printPheno(Name, Gcdr).
 
-getDominantEyes(N, E) :- person(N, eyes, E1, E2), domEye(E1, E2, E), !.
-domEye(E1, E2, E) :- eyes(E1, E2, E).
-domEye(E1, E2, E) :- eyes(E2, E1, E).
-
-getDominantHair(N, H) :- person(N, hair, H1, H2), domHair(H1, H2, H), !.
-domHair(H1, H2, H) :- hair(H1, H2, H).
-domHair(H1, H2, H) :- hair(H2, H1, H).
-
-statePheno(N, E, H) :- format('~w is ~w of hair, ~w of eye', [N, H, E]).
-
-% test(E, X1, X2, X) :- call(E, [X1, X2], X).
+dominantGene(Gene, Name, Pheno) :- person(Name, Gene, G1, G2), determineDominant(Gene, G1, G2, Pheno).
+determineDominant(Gene, G1, G2, Pheno) :- call(Gene, G1, G2, Pheno); call(Gene, G2, G1, Pheno).
