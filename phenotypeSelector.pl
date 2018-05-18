@@ -17,6 +17,21 @@ a3(N) :- eyes(brown, blue, N). % N = brown, does work.
 a3 :- eyes(brown, brown, blue). % False
 
 % TODO:
-% A predicate, printPheno(+Name), that takes the name of an individual in the DB and reports their phenotypes
 % A function, potentialPhenos(+Father, +Mother, -Eyes, -Hair), that takes the name of two individuals in the DB and lists all valid phenotype combinations.
 % A function, possiblePhenos(+Father, +Mother, +Child) that takes three individuals in: father, mother and chiid, and reports if the child is possible
+
+% printPheno(+Name).
+% Takes in the name of the individual as an argument, and reports 
+printPheno(Name) :- getDominantEyes(Name, Eyes), getDominantHair(Name, Hair), statePheno(Name, Eyes, Hair).
+
+getDominantEyes(N, E) :- person(N, eyes, E1, E2), domEye(E1, E2, E), !.
+domEye(E1, E2, E) :- eyes(E1, E2, E).
+domEye(E1, E2, E) :- eyes(E2, E1, E).
+
+getDominantHair(N, H) :- person(N, hair, H1, H2), domHair(H1, H2, H), !.
+domHair(H1, H2, H) :- hair(H1, H2, H).
+domHair(H1, H2, H) :- hair(H2, H1, H).
+
+statePheno(N, E, H) :- format('~w is ~w of hair, ~w of eye', [N, H, E]).
+
+% test(E, X1, X2, X) :- call(E, [X1, X2], X).
