@@ -15,3 +15,7 @@ tests_pp2 :- printPheno(jaime).
 tests_pp3 :- printPheno(robert).
 tests_pp4 :- printPheno(joffrey).
 tests_pp5 :- printPheno(gendry).
+
+% Tests for potentialPheno(+Father, +Mother).
+tests_po1 :- potentialPhenos(robert, cersei).
+tests_po2 :- potentialPhenos(jaime, cersei).

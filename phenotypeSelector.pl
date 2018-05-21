@@ -62,3 +62,4 @@ printAllelesForGene([Gcar|Gcdr], [Acar|Acdr]) :- format('~n~w: ', [Gcar]), print
 
 printAllele([Allele|[]]) :- format('~w;', [Allele]).
 printAllele([Car|Cdr]) :- format('~w, ', [Car]), printAllele(Cdr).
+
