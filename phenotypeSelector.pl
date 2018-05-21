@@ -36,44 +36,24 @@ determineDominant(Gene, G1, G2, Pheno) :- call(Gene, G1, G2, Pheno); call(Gene, 
 % potentialPhenos(+Father, +Mother).
 potentialPhenos(Father, Mother) :- genes(Genotype),
 findPossiblePhenos(Father, Mother, Genotype, GeneAlleleList),
-cartesianProduct(GeneAlleleList, [AlleleSets]),
-printAlleles(Genotype, AlleleSets), !.
+format('The mating of ~w and ~w will produce a child whose phenotype is a combination of the following traits:', [Father, Mother]), 
+printAllelesForGene(Genotype, GeneAlleleList), !.
 
 findPossiblePhenos(_, _, [], []).
 findPossiblePhenos(F, M, [Gcar|Gcdr], [SetPhenos|NextSetPhenos]) :- 
 person(F, Gcar, GF1, GF2), 
 person(M, Gcar, GM1, GM2), 
-printPunnett(Gcar, GF1, GF2, GM1, GM2, UnsortedPhenos), sort(UnsortedPhenos, SetPhenos),
+fullPunnett(Gcar, GF1, GF2, GM1, GM2, UnsortedPhenos), sort(UnsortedPhenos, SetPhenos),
 findPossiblePhenos(F, M, Gcdr, NextSetPhenos).
 
-printPunnett(Gene, GF1, GF2, GM1, GM2, [Pheno11, Pheno12, Pheno21, Pheno22]) :- 
+fullPunnett(Gene, GF1, GF2, GM1, GM2, [Pheno11, Pheno12, Pheno21, Pheno22]) :- 
 determineDominant(Gene, GF1, GM1, Pheno11),
 determineDominant(Gene, GF1, GM2, Pheno12),
 determineDominant(Gene, GF2, GM1, Pheno21),
 determineDominant(Gene, GF2, GM2, Pheno22).
 
-cartesianProduct([], []).
-cartesianProduct([GALcar, GALcaar|GALcdr], [AScar|AScdr]) :- product(GALcar, GALcaar, AScar), cartesianProduct(GALcdr, AScdr).
+printAllelesForGene([], _).
+printAllelesForGene([Gcar|Gcdr], [Acar|Acdr]) :- format('~n~w: ', [Gcar]), printAllele(Acar), printAllelesForGene(Gcdr, Acdr).
 
-% https://gist.github.com/raskasa/4282471
-% Edited to remove singletons.
-% product(+xs,+Ys,-Zs)
-%  returns in the Cartesian product of sets Xs and Ys in Zs.
-product([],_,[]).
-product([A|As],Bs,Cs) :- pairs(A,Bs,Xs), product(As,Bs,Ys), append(Xs,Ys,Cs).
-
-% pairs(+X,+Xs,-Ys)
-%  returns in Ys the list of pairs
-pairs(_,[],[]).
-pairs(A,[B|Bs],[[A,B]|Cs]) :- pairs(A,Bs,Cs).
-
-% append(+As,+Bs,-Cs)
-%  returns in Cs the append of lists As and Bs
-append([],Bs,Bs).
-append([A|As],Bs,[A|Cs]) :- append(As,Bs,Cs).
-
-printAlleles(_, []).
-printAlleles(Genes, [AScar|AScdr]) :- printSet(Genes, AScar), format('~n', []), printAlleles(Genes, AScdr).
-
-printSet(_, []).
-printSet([Gcar|Gcdr], [Acar|Acdr]) :- format('~w of ~w, ', [Acar, Gcar]), printSet(Gcdr, Acdr).
+printAllele([Allele|[]]) :- format('~w;', [Allele]).
+printAllele([Car|Cdr]) :- format('~w, ', [Car]), printAllele(Cdr).
