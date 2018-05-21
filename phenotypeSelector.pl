@@ -33,10 +33,15 @@ printPheno(Name, [Gcar|Gcdr]) :- format('~nmissing ~w information', [Gcar]), pri
 dominantGene(Gene, Name, Pheno) :- person(Name, Gene, G1, G2), determineDominant(Gene, G1, G2, Pheno).
 determineDominant(Gene, G1, G2, Pheno) :- call(Gene, G1, G2, Pheno); call(Gene, G2, G1, Pheno).
 
-% potentialPhenos(+Father, +Mother).
-potentialPhenos(Father, Mother) :- genes(Genotype),
-findPossiblePhenos(Father, Mother, Genotype, GeneAlleleList),
-format('The mating of ~w and ~w will produce a child whose phenotype is a combination of the following traits:', [Father, Mother]), 
+% potentialPhenos(+Father, +Mother); potentialPhenos(+Father, +Mother, +Genotype).
+% Given two individuals, execute punnett squares for every gene avaliable in the set.
+% Then print out, for each gene, the phenotypes possible.
+% I chose to do it like this rather than to list out every possible combination
+% since that requires use of a cartesian product and the data output grows too quickly.
+% Use the two-arg predicate to calculate for all genes in the genes predicate, three argument to specify a custom sublist of genes.
+potentialPhenos(Father, Mother) :- genes(Genotype), potentialPhenos(Father, Mother, Genotype).
+potentialPhenos(Father, Mother, Genotype) :- findPossiblePhenos(Father, Mother, Genotype, GeneAlleleList),
+format('~w x ~w produces an offspring whose phenotype is a combination of the following lists:', [Father, Mother]), 
 printAllelesForGene(Genotype, GeneAlleleList), !.
 
 findPossiblePhenos(_, _, [], []).
