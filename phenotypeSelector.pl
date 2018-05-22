@@ -16,8 +16,8 @@
 % A sample genotype file is provided, asoiafGenotype.pl, alongside test cases in testsASOIAF.pl
 
 % TODO:
-% A function, potentialPhenos(+Father, +Mother, -Eyes, -Hair), that takes the name of two individuals in the DB and lists all valid phenotype combinations.
-% A function, possiblePhenos(+Father, +Mother, +Child) that takes three individuals in: father, mother and chiid, and reports if the child is possible
+% A predicate, child(+Father, +Mother, +Child) that takes three individuals in: father, mother and chiid, and reports if the child is possible
+% A predicate, childGenotype(+Father, +Mother, +Child) that takes in the parents and the child and produces a potential genotype  
 
 % printPheno(+Name).
 % Takes in the name of the individual as an argument.
@@ -48,10 +48,10 @@ findPossiblePhenos(_, _, [], []).
 findPossiblePhenos(F, M, [Gcar|Gcdr], [SetPhenos|NextSetPhenos]) :- 
 person(F, Gcar, GF1, GF2), 
 person(M, Gcar, GM1, GM2), 
-fullPunnett(Gcar, GF1, GF2, GM1, GM2, UnsortedPhenos), sort(UnsortedPhenos, SetPhenos),
+phenotypePunnett(Gcar, GF1, GF2, GM1, GM2, UnsortedPhenos), sort(UnsortedPhenos, SetPhenos),
 findPossiblePhenos(F, M, Gcdr, NextSetPhenos).
 
-fullPunnett(Gene, GF1, GF2, GM1, GM2, [Pheno11, Pheno12, Pheno21, Pheno22]) :- 
+phenotypePunnett(Gene, GF1, GF2, GM1, GM2, [Pheno11, Pheno12, Pheno21, Pheno22]) :- 
 determineDominant(Gene, GF1, GM1, Pheno11),
 determineDominant(Gene, GF1, GM2, Pheno12),
 determineDominant(Gene, GF2, GM1, Pheno21),
@@ -63,3 +63,20 @@ printAllelesForGene([Gcar|Gcdr], [Acar|Acdr]) :- format('~n~w: ', [Gcar]), print
 printAllele([Allele|[]]) :- format('~w;', [Allele]).
 printAllele([Car|Cdr]) :- format('~w, ', [Car]), printAllele(Cdr).
 
+% Algorithm for "is this offspring possible"
+% For each gene mentioned
+% Find each possible combination via punnett square of the parents
+% Check to see if the geno alleles for the child is one of them.
+
+child(Father, Mother, Child) :- genes(Genotype), child(Father, Mother, Child, Genotype).
+child(_, _, _, []).
+child(F, M, C, [Gcar|Gcdr]) :- fullPunnett(F, M, Gcar, AlleleSet), childMatchPrint(C, Gcar, AlleleSet), child(F, M, C, Gcdr), !.
+
+fullPunnett(F, M, Gene, AlleleSet) :- person(F, Gene, GF1, GF2), person(M, Gene, GM1, GM2),
+sort([[GF1, GM1], [GF1, GM2], [GF2, GM1], [GF2, GM2]], AlleleSet).
+
+childMatchPrint(Child, Gene, ParentAlleleSet) :- person(Child, Gene, C1, C2), gMatch(C1, C2, ParentAlleleSet), 
+format('~n~w: Possible', [Gene]).
+childMatchPrint(_, Gene, _) :- format('~n~w: Not Possible', [Gene]).
+
+gMatch(C1, C2, ParentAlleleSet) :- member([C1, C2], ParentAlleleSet); member([C2, C1], ParentAlleleSet).
