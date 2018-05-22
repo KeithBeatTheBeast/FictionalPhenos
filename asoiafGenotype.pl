@@ -23,45 +23,68 @@
 % Name is name, Gene is the gene referenced for that person.
 % G1 and G2 are their alleles
 
-genes([eyes, hair]).
-
-eyes(X, X, X).
-eyes(baratheonBlue, _, baratheonBlue). % Baratheon eyes dominant all cases,
-eyes(green, blue, green). % Green dominates regular blue
-eyes(blue, purple, blue). % Blue dominates purple
-eyes(green, purple, purple). % Purple dominates green
+genes([eyes, hair, dragonBlood]).
 
 eyes(X, X, X).
 eyes(baratheonBlue, _, baratheonBlue). % Baratheon blue dominant all cases.
 eyes(lannisterGreen, andalBlue, lannisterGreen).
 eyes(andalBlue, valyrianViolet, valyrianViolet). % I recall a few Targs marrying blue-eyed Andals and the children having violet eyes.
 eyes(lannisterGreen, valyrianViolet, lannisterGreen).
+eyes(starkGrey, andalBlue, andalBlue).
+eyes(starkGrey, valyrianViolet, starkGrey).
+eyes(starkGrey, lannisterGreen, starkGrey).
 
 hair(X, X, X).
 hair(baratheonBlack, _, baratheonBlack). % Baratheon hair dominates all
 hair(firstMenBrown, lannisterGold, firstMenBrown). % Brown over blonde
-hair(firstMenBrown, tullyRed, firstMenBrown). % Brown over red
+hair(firstMenBrown, tullyRed, tullyRed). % Robb, Sansa, Bran and Rickon all had Catelyns fiery locks in the books. 
 hair(firstMenBrown, valyrianSilver, firstMenBrown). % Brown over silver
 hair(lannisterGold, tullyRed, lannisterGold). % Blonde over red
 hair(lannisterGold, valyrianSilver, valyrianSilver). % Silver over blonde
 hair(tullyRed, valyrianSilver, tullyRed). % Red over silver
 
+% Dragon Blood - Westerosi (Dominant) or Valyrian (Recessive)
+% Interpret it as you will - whether it just means "I can tame dragons" or "I am fireproof"
+% There have been Valyrians who have perished by fire and dragon fire.
+dragonBlood(X, X, X).
+dragonBlood(westerosi, _, westerosi).
+
 % The Mother of Madness
 person(cersei, eyes, lannisterGreen, lannisterGreen).
 person(cersei, hair, lannisterGold, lannisterGold).
+person(cersei, dragonBlood, westerosi, westerosi).
 
 % The Kingslayer
 person(jaime, eyes, lannisterGreen, lannisterGreen).
 person(jaime, hair, lannisterGold, lannisterGold).
+person(jaime, dragonBlood, westerosi, westerosi).
 
 % The Usurper King
 person(robert, eyes, baratheonBlue, _).
 person(robert, hair, baratheonBlack, firstMenBrown).
+person(robert, dragonBlood, westerosi, westerosi).
 
 % Aerys III
 person(joffrey, eyes, lannisterGreen, lannisterGreen).
 person(joffrey, hair, lannisterGold, lannisterGold).
+person(joffrey, dragonBlood, westerosi, westerosi).
+
+% And his Rhaelle
+person(sansa, eyes, andalBlue, starkGrey).
+person(sansa, hair, tullyRed, firstMenBrown).
+person(sansa, dragonBlood, westerosi, westerosi).
 
 % Orys Baratheon reborn, or the One Trueborn Heir...?
 person(gendry, eyes, baratheonBlue, _).
 person(gendry, hair, baratheonBlack, _).
+person(gendry, dragonBlood, westerosi, westerosi).
+
+% A girl has no name
+person(arya, eyes, starkGrey, _).
+person(arya, hair, firstMenBrown, _).
+person(arya, dragonBlood, westerosi, westerosi).
+
+% Daenerys
+person(daenerys, eyes, valyrianViolet, valyrianViolet).
+person(daenerys, hair, valyrianSilver, valyrianSilver).
+person(daenerys, dragonBlood, valyrian, valyrian).

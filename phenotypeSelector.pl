@@ -63,12 +63,16 @@ printAllelesForGene([Gcar|Gcdr], [Acar|Acdr]) :- format('~n~w: ', [Gcar]), print
 printAllele([Allele|[]]) :- format('~w;', [Allele]).
 printAllele([Car|Cdr]) :- format('~w, ', [Car]), printAllele(Cdr).
 
-% Algorithm for "is this offspring possible"
-% For each gene mentioned
-% Find each possible combination via punnett square of the parents
-% Check to see if the geno alleles for the child is one of them.
-
-child(Father, Mother, Child) :- genes(Genotype), child(Father, Mother, Child, Genotype).
+% child(+Father, +Mother, +Child); child(+Father, +Mother, +Child, -Genotype)
+% Takes in three arguments correspondong to three sets of people predicates in the genotype database.
+% And an additional, optional fourth argument corresponding to a list of genes (e.g. [eyes, hair])
+% The default is the list of genes mentioned in the gene predicate of the database.
+% For each gene, either by default or the custom list, the predicate will perform a punnett square operation
+% on the parents alleles, producing a set of allele pairs.
+% It then checks to see if the childs alleles for this gene are a member of that set.
+% Reports possible/not possible on a gene-to-gene basis. Consider 1 "Not Possible" result as corresponding to 
+% a complete fail, or false information.
+child(Father, Mother, Child) :- genes(Genotype), format('~w + ~w = ~w?', [Father, Mother, Child]), child(Father, Mother, Child, Genotype).
 child(_, _, _, []).
 child(F, M, C, [Gcar|Gcdr]) :- fullPunnett(F, M, Gcar, AlleleSet), childMatchPrint(C, Gcar, AlleleSet), child(F, M, C, Gcdr), !.
 
@@ -80,3 +84,10 @@ format('~n~w: Possible', [Gene]).
 childMatchPrint(_, Gene, _) :- format('~n~w: Not Possible', [Gene]).
 
 gMatch(C1, C2, ParentAlleleSet) :- member([C1, C2], ParentAlleleSet); member([C2, C1], ParentAlleleSet).
+
+% findRecessive(+Gene, +D_Allele, -R_Allele)
+% Given a gene (eyes, hair) and a dominant allele for that gene, find all corresponding recessive alleles. 
+% When the function simply returns true as the first result, it means the allele is dominant with respect
+% to all other alleles for that gene in the database
+% likewise, false means it is recessive to everything.
+findRecessive(G, D, R) :- call(G, D, R, D), R \== D; call(G, R, D, D), R \== D.
