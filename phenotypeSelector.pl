@@ -16,8 +16,8 @@
 % A sample genotype file is provided, asoiafGenotype.pl, alongside test cases in testsASOIAF.pl
 
 % TODO:
-% A predicate, child(+Father, +Mother, +Child) that takes three individuals in: father, mother and chiid, and reports if the child is possible
 % A predicate, childGenotype(+Father, +Mother, +Child) that takes in the parents and the child and produces a potential genotype  
+% I want to make an external Python or Java script that will go through a Genotype file and check for inconsistencies/multiple predicates for allele interactions
 
 % printPheno(+Name).
 % Takes in the name of the individual as an argument.
