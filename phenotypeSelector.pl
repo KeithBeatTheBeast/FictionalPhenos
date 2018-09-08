@@ -15,10 +15,6 @@
 % and individuals with their traits.
 % A sample genotype file is provided, asoiafGenotype.pl, alongside test cases in testsASOIAF.pl
 
-% TODO:
-% A predicate, childGenotype(+Father, +Mother, +Child) that takes in the parents and the child and produces a potential genotype  
-% I want to make an external Python or Java script that will go through a Genotype file and check for inconsistencies/multiple predicates for allele interactions
-
 % printPheno(+Name).
 % Takes in the name of the individual as an argument.
 % It then recursively goes through the list of genes declared in 
@@ -85,9 +81,21 @@ childMatchPrint(_, Gene, _) :- format('~n~w: Not Possible', [Gene]).
 
 gMatch(C1, C2, ParentAlleleSet) :- member([C1, C2], ParentAlleleSet); member([C2, C1], ParentAlleleSet).
 
-% findRecessive(+Gene, +D_Allele, -R_Allele)
-% Given a gene (eyes, hair) and a dominant allele for that gene, find all corresponding recessive alleles. 
-% When the function simply returns true as the first result, it means the allele is dominant with respect
-% to all other alleles for that gene in the database
-% likewise, false means it is recessive to everything.
-findRecessive(G, D, R) :- call(G, D, R, D), R \== D; call(G, R, D, D), R \== D.
+% findRecOrDom(+Gene, +/-D_Allele, -/+R_Allele)
+% This predicate can be used in two ways:
+% 	findRecOrDom(+Gene, +D_Allele, -R_Allele) - given a gene and a dominant allele, find all 
+% 	recessive alleles for that gene.
+%	Returns true if D_Allele is dominant to all other alleles on that gene
+% 	Returns false if D_Allele is recessive to all other alleles on that gene
+%	A list of the recessive alleles, by name
+% OR
+% 	findRecOrDom(+Gene, -D_Allele, +R_Allele) - given a gene and a recessive allele, find all
+% 	dominant alleles for that gene.
+% 	Returns a list of the dominant alleles, or false if R_Allele is recessive to nothing.
+findRecOrDom(G, D, R) :- call(G, D, R, D), R \== D; call(G, R, D, D), R \== D.
+
+% printAllPhenotypes(), printAllPhenotypes(+List).
+% The first prints the phenotypes for all characters listed in the characters predicate.
+% The second allows you to specify a list.
+printAllPhenotypes() :- characters(List), printAllPhenotypes(List).
+printAllPhenotypes([Lcar|Lcdr]) :- printPheno(Lcar), nl(), nl(), printAllPhenotypes(Lcdr).

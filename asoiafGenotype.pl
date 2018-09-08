@@ -23,7 +23,18 @@
 % Name is name, Gene is the gene referenced for that person.
 % G1 and G2 are their alleles
 
-genes([eyes, hair, dragonBlood]).
+genes([eyes,
+	hair,
+	dragonBlood]).
+
+characters([cersei,
+	jaime,
+	robert,
+	joffrey,
+	sansa,
+	gendry,
+	arya,
+	daenerys]).
 
 eyes(X, X, X).
 eyes(baratheonBlue, _, baratheonBlue). % Baratheon blue dominant all cases.
